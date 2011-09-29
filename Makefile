@@ -10,7 +10,7 @@ CLEANUP = SimpleClass-concat.min.js SimpleClass-debug-concat.js SimpleClass-debu
 
 .DEFAULT_GOAL := all
 
-all: $(BUILD_NUM) js SimpleClass.min.js SimpleClass-debug.js cleanup
+all: $(BUILD_NUM) js SimpleClass.min.js SimpleClass.min.js.gz SimpleClass-debug.js cleanup
 
 CLOSURE = java -jar ./bin/compiler.jar
 CLOSURE_FLAGS =

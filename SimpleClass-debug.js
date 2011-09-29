@@ -2,7 +2,7 @@
  * @license
  * SimpleClass
  * Copyright(c) 2011 Johnathan Leppert
- * Build: 0.1 6 2011-09-28 22:09:32 johnathan 
+ * Build: 0.1 8 2011-09-28 23:09:41 johnathan 
  * MIT License
  * Inspired by John Resig's Simple Inheritance and Prototype
  */
@@ -15,7 +15,7 @@
     global.SimpleClass = Class;
 
     Class._version = {
-        build: 6,
+        build: 8,
         version: 0.1
     };
 
