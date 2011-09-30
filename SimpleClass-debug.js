@@ -2,7 +2,7 @@
  * @license
  * SimpleClass
  * Copyright(c) 2011 Johnathan Leppert
- * Build: 0.1 20 2011-09-29 18:09:38 jleppert 
+ * Build: 0.1 21 2011-09-29 22:09:18 johnathan 
  * MIT License
  * Inspired by John Resig's Simple Inheritance and Prototype
  */
@@ -15,7 +15,7 @@
     global.SimpleClass = Class;
 
     Class._version = {
-        build: 20,
+        build: 21,
         version: 0.1
     };
 
@@ -95,8 +95,8 @@
         function Class() {
             // All construction is actually done in the init method
             if (!initializing) {
-                if(this.init) {
-                    this.init.apply(this, arguments);
+                if(this._init) {
+                    this._init.apply(this, arguments);
                 }
                 // copy instance properties over to our instance           
                 search(Class.prototype, '_instance', this);

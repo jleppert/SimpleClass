@@ -54,6 +54,11 @@ describe('SimpleClass', function() {
     });
 
     describe('Basic Objects', function() {
+        it('should be extendable', function() {
+            var myObj = SimpleClass._extend();
+            expect(typeof(myObj._extend)).toEqual('function');
+        });
+        
         it('should support prototypical properties', function() { 
             var myObj = SimpleClass._extend({
                 name: 'obj',
@@ -141,9 +146,34 @@ describe('SimpleClass', function() {
             });
 
             expect(myObj.mymethod).toBeDefined();
+            expect(myObj.something).toBeDefined();
+
+            var instance = new myObj();
+
+            expect(instance.something).toBeDefined();
+            expect(instance.one).toBeDefined();
         });
 
+        it('should call a constructor if one is provided', function() {
+            var called_init = false;
 
+            var myObj = SimpleClass._extend({
+               _init: function() {
+                   called_init = true;
+               }
+            });
+
+            var instance = new myObj();
+            expect(called_init).toBeTruthy();
+        });
+
+        it('should have a superClass property', function() {
+            var myObj = SimpleClass._extend();
+            expect(myObj.prototype._superClass).toBeDefined();
+        });
+    });
+
+    describe('Basic Inheritance', function() {
 
 
 
