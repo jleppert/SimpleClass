@@ -2,7 +2,7 @@
  * @license
  * SimpleClass
  * Copyright(c) 2011 Johnathan Leppert
- * Build: 0.1 21 2011-09-29 22:09:18 johnathan 
+ * Build: 0.1 22 2011-09-30 18:09:38 jleppert 
  * MIT License
  * Inspired by John Resig's Simple Inheritance and Prototype
  */
@@ -42,14 +42,31 @@
                 (function(name, fn){
                     return function() {
                         var tmp = this._super;
+                        var tmp2 = this._class;
                         this._super = _super[name];
+                        this._class = Class.prototype;
 
                         var ret = fn.apply(this, arguments);       
                         this._super = tmp;
+                        this._class = tmp2;
 
                         return ret;
                     };
-                 })(name, prop[name]) : prop[name];
+                 })(name, prop[name]) : (function(name, fn){
+                     if(typeof(prop[name]) == 'function') {
+                        return function() {
+                            var tmp = this._class;
+                            this._class = Class.prototype;
+                            
+                            var ret = fn.apply(this, arguments);
+                            this._class = tmp;
+
+                            return ret;
+                        };
+                     } else {
+                        return prop[name];
+                     }
+                 })(name, prop[name]);
         }
 
         function extend(dest, src) {
@@ -61,8 +78,8 @@
         function search (self, prop, inject, append) {
             var inject = inject ? inject : self;
             if(self._superClass && self._superClass[prop]) {
-                var s = search(self._superClass, prop);
-                var obj = s ? s : self._superClass[prop];
+                search(self._superClass, prop, inject, true);
+                var obj = self._superClass[prop];
                 for(var name in obj) {
                     if(self[prop][name] === undefined) {
                         if(append) {
@@ -135,7 +152,7 @@
         // Add ability to access our parent object
         Class.prototype._superClass = this.prototype;
         // Add any static properties
-        search(Class.prototype, '_static', Class);
+        search(Class.prototype, '_static', Class, true);
         // And make this class extendable
         Class._extend = arguments.callee;
 

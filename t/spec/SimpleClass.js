@@ -171,11 +171,230 @@ describe('SimpleClass', function() {
             var myObj = SimpleClass._extend();
             expect(myObj.prototype._superClass).toBeDefined();
         });
+
     });
 
     describe('Basic Inheritance', function() {
+            it('objects should be able to be extended', function() {
+                var myObj = SimpleClass._extend({
+                    _instance: {
+                        one: 'two'
+                    },
+                    _static: {
+                        something: 'here'
+                    },
+                    color: 'blue'
+                });
 
+                var child = myObj._extend({
+                    _instance: {
+                        three: 'four'
+                    },
+                    _static: {
+                        stuff: 'here'
+                    },
+                    type: 'fun'
+                });
+                
+                // static properties
+                expect(child.something).toBeDefined();
+                expect(child.stuff).toBeDefined();
 
+                var instance = new child();
+                
+                // instance properties
+                expect(instance.three).toBeDefined();
+                expect(instance.one).toBeDefined();
+                
+                // instance prototype
+                expect(instance.color).toBeDefined();
+                expect(instance.type).toBeDefined();
+            });
+
+            it('multiple inheritance should work', function() {
+                var first = SimpleClass._extend({
+                    _instance: {
+                        one: 'two'
+                    },
+                    _static: {
+                        something: 'here'
+                    },
+                    color: 'blue'
+                });
+
+                var second = first._extend({
+                    _instance: {
+                        three: 'four'
+                    },
+                    _static: {
+                        stuff: 'here'
+                    },
+                    really: 'fun'
+                });
+
+                var third = second._extend({
+                    _instance: {
+                        five: 'six'
+                    },
+                    _static: {
+                        more: 'yes'
+                    },
+                    type: 'great'
+                });
+
+                // static properties
+                expect(third.something).toBeDefined();
+                expect(third.stuff).toBeDefined();
+                expect(third.more).toBeDefined();
+
+                var instance = new third();
+
+                // instance properties
+                expect(instance.three).toBeDefined();
+                expect(instance.one).toBeDefined();
+                expect(instance.five).toBeDefined();
+
+                // prototype properties
+                expect(instance.color).toBeDefined();
+                expect(instance.type).toBeDefined();
+                expect(instance.really).toBeDefined();
+
+            });
+
+            it('defined class prototype should be accessible', function() {
+                var first = SimpleClass._extend({
+                    name: 'first',
+                    getName1: function() {
+                        return this._class.name;
+                    }
+                });
+
+                var second = first._extend({
+                    name: 'second',
+                    getName2: function() {
+                        return this._class.name;
+                    }
+                });
+
+                var instance = new second();
+                expect(instance.getName1()).toEqual('first');
+                expect(instance.getName2()).toEqual('second');
+
+            });
+
+            it('parent class methods should be able to be called and understand their this value', function() {
+                var called_parent = false;
+                var called_child  = false;
+
+                var first = SimpleClass._extend({
+                    _instance: {
+                        one: 'two'
+                    },
+                    _static: {
+                        something: 'here'
+                    },
+                    color: 'blue',
+                    setColor1: function() {
+                        this.color = 'blue';
+                    }
+                });
+
+                var second = first._extend({
+                    _instance: {
+                        color: 'none'
+                    },
+                    _static: {
+                        stuff: 'here'
+                    },
+                    setColor1: function() {
+                        this.origColor = 'green';
+                        this._super();
+                    },
+                    setColor2: function() {
+                        this.color = 'pink';
+                    }
+                });
+
+                var instance = new second();
+                expect(instance.color).toEqual('none');
+                instance.setColor1();
+                expect(instance.color).toEqual('blue');
+                expect(instance.origColor).toEqual('green');
+                instance.setColor2();
+                expect(instance.color).toEqual('pink');
+
+            });
+        
+            it('mixed classes should be inherited', function() {
+                var mix = {
+                    hello: function() { },
+                    goodbye: function() { }
+                };
+
+                var mix2 = {
+                    other: function() { },
+                    another: function() { }
+                };
+
+                var mix3 = {
+                    hey: function() { },
+                    who: function() { }
+                };
+
+                var mix4 = {
+                    great: 'nice',
+                    awesome: 'person'
+                };
+                
+                var first = SimpleClass._extend({
+                    _instance: {
+                        one: 'two'
+                    },
+                    _static: {
+                        something: 'here'
+                    },
+                    _mix: [mix],
+                    color: 'blue'
+                });
+
+                var second = first._extend({
+                    _instance: {
+                        three: 'four'
+                    },
+                    _static: {
+                        stuff: 'here'
+                    },
+                    _mix: [mix2, mix3],
+                    really: 'fun'
+                });
+
+                var third = second._extend({
+                    _instance: {
+                        five: 'six'
+                    },
+                    _static: {
+                        more: 'yes'
+                    },
+                    _mix: [mix4],
+                    type: 'great'
+                });
+
+                var instance1 = new second();
+                var instance2 = new third();
+                
+                expect(typeof(instance1.hello)).toEqual('function');
+                expect(typeof(instance1.goodbye)).toEqual('function');
+
+                expect(typeof(instance1.hey)).toEqual('function');
+                expect(typeof(instance1.who)).toEqual('function');
+
+                expect(typeof(instance2.hello)).toEqual('function');
+                expect(typeof(instance2.goodbye)).toEqual('function');
+
+                
+
+            });
+            
 
     });
 
