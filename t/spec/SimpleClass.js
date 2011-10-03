@@ -266,6 +266,9 @@ describe('SimpleClass', function() {
                     name: 'first',
                     getName1: function() {
                         return this._class.name;
+                    },
+                    getCurrentName: function() {
+                        return this.name;
                     }
                 });
 
@@ -279,7 +282,42 @@ describe('SimpleClass', function() {
                 var instance = new second();
                 expect(instance.getName1()).toEqual('first');
                 expect(instance.getName2()).toEqual('second');
+                expect(instance.getCurrentName()).toEqual('second');
 
+            });
+
+            it('defined class prototype should be accessible in decendant classes', function() {
+                var A = SimpleClass._extend({
+                    name: 'I am class A',
+                    getName: function() {
+                        return this._class.name;
+                    }
+                });
+
+                var B = A._extend({
+                    name: 'I am class B',
+                    getName: function() {
+                        return this._class.name;
+                    }
+                });
+
+                var C = B._extend({
+                    name: 'I am class C',
+                    getParentName: function() {
+                        return this._superClass.getName();
+                    },
+                    getGrandparentName: function() {
+                        return this._superClass._superClass.getName();
+                    },
+                    getName: function() {
+                        return this._class.name;
+                    }
+                });
+
+                var instance = new C();
+                expect(instance.getName()).toEqual('I am class C');
+                expect(instance.getParentName()).toEqual('I am class B');
+                expect(instance.getGrandparentName()).toEqual('I am class A');
             });
 
             it('parent class methods should be able to be called and understand their this value', function() {
@@ -390,9 +428,6 @@ describe('SimpleClass', function() {
 
                 expect(typeof(instance2.hello)).toEqual('function');
                 expect(typeof(instance2.goodbye)).toEqual('function');
-
-                
-
             });
             
 

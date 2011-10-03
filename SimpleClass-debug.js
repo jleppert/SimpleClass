@@ -2,7 +2,7 @@
  * @license
  * SimpleClass
  * Copyright(c) 2011 Johnathan Leppert
- * Build: 0.1 22 2011-09-30 18:09:38 jleppert 
+ * Build: 0.1 24 2011-10-02 22:10:54 johnathan 
  * MIT License
  * Inspired by John Resig's Simple Inheritance and Prototype
  */
