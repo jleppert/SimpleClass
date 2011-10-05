@@ -2,7 +2,7 @@
  * @license
  * SimpleClass
  * Copyright(c) 2011 Johnathan Leppert
- * Build: 0.1 24 2011-10-02 22:10:54 johnathan 
+ * Build: 0.1 25 2011-10-05 11:10:50 johnathan 
  * MIT License
  * Inspired by John Resig's Simple Inheritance and Prototype
  */
@@ -15,7 +15,7 @@
     global.SimpleClass = Class;
 
     Class._version = {
-        build: 21,
+        build: 25,
         version: 0.1
     };
 
@@ -126,11 +126,27 @@
         if(prop._mix) {
             for(var i = 0; i < prop._mix.length; i++) {
                 var mixClass = prop._mix[i];
-                
+               
+                if(mixClass.prototype) {
+                    // copy prototype properties
+                    for(var item in mixClass.prototype) {
+                        if(Class.prototype[item] === undefined) {
+                            Class.prototype[item] = mixClass.prototype[item];
+                        }
+                    }
+                } else {
+                    // copy static properties if we don't have a prototype
+                    for(var item in mixClass) {
+                        if(Class.prototype[item] === undefined) {
+                            Class.prototype[item] = mixClass[item];
+                        }
+                    }
+                }
+
                 // copy prototype properties
-                for(var item in mixClass) {
+                for(var item in mixClass.prototype) {
                     if(Class.prototype[item] === undefined) {
-                        Class.prototype[item] = mixClass[item];
+                        Class.prototype[item] = mixClass.prototype[item];
                     }
                 }
 

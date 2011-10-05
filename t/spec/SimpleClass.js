@@ -363,7 +363,7 @@ describe('SimpleClass', function() {
 
             });
         
-            it('mixed classes should be inherited', function() {
+            it('mixed objects should be inherited', function() {
                 var mix = {
                     hello: function() { },
                     goodbye: function() { }
@@ -428,6 +428,57 @@ describe('SimpleClass', function() {
 
                 expect(typeof(instance2.hello)).toEqual('function');
                 expect(typeof(instance2.goodbye)).toEqual('function');
+            });
+
+            it('mixed complex classes should be inherited', function() {
+                var mixed1 = SimpleClass._extend({
+                    _instance: {
+                        hello: 'test'
+                    },
+                    _static: {
+                        one: 'two'
+                    },
+                    people: true
+                });
+
+                var mixed2 = SimpleClass._extend({
+                    _instance: {
+                        date: 'today',
+                    },
+                    _static: {
+                        something: 'yes'
+                    },
+                    canWalk: false
+                });
+
+                var person = SimpleClass._extend({
+                    _instance: {
+                        myvar: 'something'
+                    },
+                    _static: {
+                        two: 'three'
+                    },
+                    _mix: [mixed1, mixed2],
+                    greg: false
+                });
+
+                expect(person.one).toEqual('two');
+                expect(person.two).toEqual('three');
+                expect(person.something).toEqual('yes');
+                
+                var instance = new person();
+                
+                expect(instance.hello).toEqual('test');
+                expect(instance.myvar).toEqual('something');
+                expect(instance.people).toBeTruthy();
+                expect(instance.greg).toBeFalsy();
+                expect(instance.date).toEqual('today');
+                expect(instance.canWalk).toBeDefined();
+            });
+
+            it('mixed complex classes with inheritance should be able to be mixed themselves', function() {
+                
+
             });
             
 
