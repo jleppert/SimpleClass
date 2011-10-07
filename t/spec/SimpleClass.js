@@ -477,6 +477,16 @@ describe('SimpleClass', function() {
             });
 
             it('mixed complex classes with inheritance should be able to be mixed themselves', function() {
+                var premix = SimpleClass._extend({
+                    _instance: {
+                        hello: 'goodbye'
+                    },
+                    _static: {
+                        fun: false
+                    },
+                    people: []
+                });
+                
                 var mixed1 = SimpleClass._extend({
                     _instance: {
                         up: 'down'
@@ -494,6 +504,7 @@ describe('SimpleClass', function() {
                     _static: {
                         once: 'c'
                     },
+                    _mix: [premix],
                     canJump: 'two'
                 });
 
@@ -523,6 +534,7 @@ describe('SimpleClass', function() {
                 expect(something.end).toEqual('b');
                 expect(something.once).toEqual('c');
                 expect(something.one).toEqual('d');
+                expect(something.fun).toBeFalsy();
 
                 var instance = new something();
                 expect(instance.animal).toBeDefined();
@@ -532,6 +544,33 @@ describe('SimpleClass', function() {
                 expect(instance.welcome).toEqual('yes');
                 expect(instance.yes).toBeTruthy();
                 expect(instance.blah).toEqual(10);
+
+                expect(instance.hello).toEqual('goodbye');
+                expect(instance.people).toBeDefined();
             });
+    });
+
+    describe('Reflection', function() {
+        it('class instances should work with instanceof', function() {
+            
+            var parent = SimpleClass._extend();
+            var child  = parent._extend();
+
+            expect(child.prototype._superClass == parent.prototype).toBeTruthy();
+
+            var instance = new child();
+            expect(instance instanceof parent).toBeTruthy();
+            expect(instance instanceof child).toBeTruthy();
+            expect(instance instanceof SimpleClass).toBeTruthy();
+        });
+
+        it('should be able to modify prototype after class creation', function() {
+            var something = SimpleClass._extend();
+            something.prototype.blah = 'hello';
+
+            var instance = new something();
+            expect(something.prototype.blah).toEqual('hello');
+            expect(instance.blah).toEqual('hello');
+        });
     });
 });
