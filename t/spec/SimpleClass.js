@@ -477,11 +477,61 @@ describe('SimpleClass', function() {
             });
 
             it('mixed complex classes with inheritance should be able to be mixed themselves', function() {
-                
+                var mixed1 = SimpleClass._extend({
+                    _instance: {
+                        up: 'down'
+                    },
+                    _static: {
+                        cool: 'a'
+                    },
+                    animal: []
+                });
 
+                var mixed2 = SimpleClass._extend({
+                    _instance: {
+                        welcome: 'yes'
+                    },
+                    _static: {
+                        once: 'c'
+                    },
+                    canJump: 'two'
+                });
+
+                var all = SimpleClass._extend({
+                    _instance: {
+                        yes: true
+                    },
+                    _mix: [mixed1, mixed2],
+                    _static: {
+                        one: 'd'
+                    },
+                    canEat: false
+                });
+
+                var something = SimpleClass._extend({
+                    _instance: {
+                        blah: 10
+                    },
+                    _mix: [all],
+                    _static: {
+                        end: 'b'
+                    },
+                    canDance: true
+                });
+
+                expect(something.cool).toEqual('a');
+                expect(something.end).toEqual('b');
+                expect(something.once).toEqual('c');
+                expect(something.one).toEqual('d');
+
+                var instance = new something();
+                expect(instance.animal).toBeDefined();
+                expect(instance.canJump).toEqual('two');
+                expect(instance.canEat).toBeFalsy();
+                expect(instance.up).toEqual('down');
+                expect(instance.welcome).toEqual('yes');
+                expect(instance.yes).toBeTruthy();
+                expect(instance.blah).toEqual(10);
             });
-            
-
     });
-
 });
